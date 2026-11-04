@@ -1,0 +1,326 @@
+### Rejestracja
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{"email":"Jan.Kowalski@example.com","password":"bardzo-dlugie-haslo"}
+
+### Rejestracja z rolą ADMIN
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{"email":"ewa.nowak@example.com","password":"bardzo-dlugie-haslo","role":"ADMIN"}
+
+### Za krótkie hasło
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{"email":"ewa.nowak@example.com","password":"krotkie"}
+
+### Duplikat emaila innymi literami
+POST http://localhost:3000/api/auth/register
+Content-Type: application/json
+
+{"email":"JAN.KOWALSKI@EXAMPLE.COM","password":"bardzo-dlugie-haslo"}
+
+### Logowanie
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"jan.kowalski@example.com","password":"bardzo-dlugie-haslo"}
+
+### Zły email
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"nie.ma.takiego@example.com","password":"bardzo-dlugie-haslo"}
+
+### Złe hasło
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"jan.kowalski@example.com","password":"zle-haslo-123"}
+
+### Dane zalogowanego użytkownika
+GET http://localhost:3000/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiI0In0.-W0VTrKk0qx9b9i-bKNrCJuduqxfhkJaozUJ0weeXg8
+
+### Logowanie admin
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"admin@example.com","password":"admin-password-123"}
+
+### Logowanie anna
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"anna.nowak@example.com","password":"anna-password-123"}
+
+### Logowanie piotr
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{"email":"piotr.zielinski@example.com","password":"piotr-password-123"}
+
+### Brak nagłówka
+GET http://localhost:3000/api/reservations
+
+### Nagłówek Basic
+GET http://localhost:3000/api/reservations
+Authorization: Basic YW5uYTpoYXNsbw==
+
+### Bearer bez tokenu
+GET http://localhost:3000/api/reservations
+Authorization: Bearer
+
+### Zły podpis
+GET http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4AyAt1kbW28p0lVNl6h43mY
+
+### Zmieniony payload
+GET http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMiJ9.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Wygasły token
+GET http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNSwiZXhwIjoxNzkzODI1NDI1LCJzdWIiOiIyIn0.s1oIJljLt5cpGtvxOvZVsgFdiaAv5veQqwkLwETfJBM
+
+### userId w body
+POST http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+Content-Type: application/json
+
+{"roomId":2,"userId":3,"participants":10,"startTime":"2026-12-01T10:00:00Z","endTime":"2026-12-01T12:00:00Z"}
+
+### reservedBy w body
+POST http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+Content-Type: application/json
+
+{"roomId":2,"reservedBy":"Piotr Zielinski","participants":10,"startTime":"2026-12-01T10:00:00Z","endTime":"2026-12-01T12:00:00Z"}
+
+### Nowa rezerwacja USER
+POST http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+Content-Type: application/json
+
+{"roomId":2,"participants":10,"startTime":"2026-12-01T10:00:00Z","endTime":"2026-12-01T12:00:00Z"}
+
+### Budynki bez tokenu
+GET http://localhost:3000/api/buildings
+
+### Budynki USER
+GET http://localhost:3000/api/buildings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Budynki ADMIN
+GET http://localhost:3000/api/buildings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Nowy budynek bez tokenu
+POST http://localhost:3000/api/buildings
+Content-Type: application/json
+
+{"name":"Budynek C","address":"ul. Długa 5, Kraków"}
+
+### Nowy budynek USER
+POST http://localhost:3000/api/buildings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+Content-Type: application/json
+
+{"name":"Budynek C","address":"ul. Długa 5, Kraków"}
+
+### Nowy budynek ADMIN
+POST http://localhost:3000/api/buildings
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+Content-Type: application/json
+
+{"name":"Budynek C","address":"ul. Długa 5, Kraków"}
+
+### Zmiana budynku bez tokenu
+PATCH http://localhost:3000/api/buildings/3
+Content-Type: application/json
+
+{"address":"ul. Długa 7, Kraków"}
+
+### Zmiana budynku USER
+PATCH http://localhost:3000/api/buildings/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+Content-Type: application/json
+
+{"address":"ul. Długa 7, Kraków"}
+
+### Zmiana budynku ADMIN
+PATCH http://localhost:3000/api/buildings/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+Content-Type: application/json
+
+{"address":"ul. Długa 7, Kraków"}
+
+### Sale bez tokenu
+GET http://localhost:3000/api/rooms
+
+### Sale USER
+GET http://localhost:3000/api/rooms
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Sale ADMIN
+GET http://localhost:3000/api/rooms
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Nowa sala bez tokenu
+POST http://localhost:3000/api/rooms
+Content-Type: application/json
+
+{"buildingId":3,"name":"001","capacity":15}
+
+### Nowa sala USER
+POST http://localhost:3000/api/rooms
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+Content-Type: application/json
+
+{"buildingId":3,"name":"001","capacity":15}
+
+### Nowa sala ADMIN
+POST http://localhost:3000/api/rooms
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+Content-Type: application/json
+
+{"buildingId":3,"name":"001","capacity":15}
+
+### Zmiana sali bez tokenu
+PATCH http://localhost:3000/api/rooms/6
+Content-Type: application/json
+
+{"capacity":18}
+
+### Zmiana sali USER
+PATCH http://localhost:3000/api/rooms/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+Content-Type: application/json
+
+{"capacity":18}
+
+### Zmiana sali ADMIN
+PATCH http://localhost:3000/api/rooms/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+Content-Type: application/json
+
+{"capacity":18}
+
+### Usunięcie budynku z salami
+DELETE http://localhost:3000/api/buildings/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Usunięcie sali bez tokenu
+DELETE http://localhost:3000/api/rooms/6
+
+### Usunięcie sali USER
+DELETE http://localhost:3000/api/rooms/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Usunięcie sali ADMIN
+DELETE http://localhost:3000/api/rooms/6
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Usunięcie budynku bez tokenu
+DELETE http://localhost:3000/api/buildings/3
+
+### Usunięcie budynku USER
+DELETE http://localhost:3000/api/buildings/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Usunięcie budynku ADMIN
+DELETE http://localhost:3000/api/buildings/3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Lista rezerwacji bez tokenu
+GET http://localhost:3000/api/reservations
+
+### Lista rezerwacji USER
+GET http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Lista rezerwacji USER z userId
+GET http://localhost:3000/api/reservations?userId=3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Lista rezerwacji ADMIN
+GET http://localhost:3000/api/reservations?limit=3
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Lista rezerwacji ADMIN z userId
+GET http://localhost:3000/api/reservations?userId=3&status=CONFIRMED
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Lista rezerwacji USER, filtr i strona
+GET http://localhost:3000/api/reservations?status=CONFIRMED&sort=-startTime&page=2&limit=1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Rezerwacja 1 bez tokenu
+GET http://localhost:3000/api/reservations/1
+
+### Rezerwacja 1 właściciel
+GET http://localhost:3000/api/reservations/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Rezerwacja 1 obcy USER
+GET http://localhost:3000/api/reservations/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIzIn0.ENZl7nM4ys2GPJeJQqZQiplFPzrsbxoebWxLVhKkQN0
+
+### Rezerwacja 1 ADMIN
+GET http://localhost:3000/api/reservations/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Nowa rezerwacja bez tokenu
+POST http://localhost:3000/api/reservations
+Content-Type: application/json
+
+{"roomId":3,"participants":30,"startTime":"2026-12-01T10:00:00Z","endTime":"2026-12-01T12:00:00Z"}
+
+### Nowa rezerwacja ADMIN
+POST http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+Content-Type: application/json
+
+{"roomId":3,"participants":30,"startTime":"2026-12-01T10:00:00Z","endTime":"2026-12-01T12:00:00Z"}
+
+### Anulowanie bez tokenu
+PATCH http://localhost:3000/api/reservations/2/cancel
+
+### Anulowanie obcy USER
+PATCH http://localhost:3000/api/reservations/2/cancel
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIzIn0.ENZl7nM4ys2GPJeJQqZQiplFPzrsbxoebWxLVhKkQN0
+
+### Anulowanie właściciel
+PATCH http://localhost:3000/api/reservations/2/cancel
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiVVNFUiIsImlhdCI6MTc5MzgyNTQxNiwiZXhwIjoxNzkzODI2MzE2LCJzdWIiOiIyIn0.6Z0hDUaS3jMuR3pc22Tu4zyAt1kbW28p0lVNl6h43mY
+
+### Anulowanie ADMIN
+PATCH http://localhost:3000/api/reservations/1/cancel
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### Me bez tokenu
+GET http://localhost:3000/api/auth/me
+
+### Me ADMIN
+GET http://localhost:3000/api/auth/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+
+### ADMIN: kolizja
+POST http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+Content-Type: application/json
+
+{"roomId":5,"participants":5,"startTime":"2026-11-20T08:30:00Z","endTime":"2026-11-20T09:00:00Z"}
+
+### ADMIN: za dużo uczestników
+POST http://localhost:3000/api/reservations
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM
+Content-Type: application/json
+
+{"roomId":5,"participants":11,"startTime":"2026-11-21T08:00:00Z","endTime":"2026-11-21T09:00:00Z"}
+
+### ADMIN: anulowanie rozpoczętej rezerwacji
+PATCH http://localhost:3000/api/reservations/4/cancel
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiQURNSU4iLCJpYXQiOjE3OTM4MjU0MTYsImV4cCI6MTc5MzgyNjMxNiwic3ViIjoiMSJ9.WUvdauk3IgZpiWNA5e5D_iLjERtPj1jWCwxQ50L85YM

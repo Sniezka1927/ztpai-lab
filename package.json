@@ -1,0 +1,17 @@
+{
+  "name": "room-booking-api",
+  "version": "4.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "knex": "^3.3.0",
+    "pg": "^8.23.1",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.1.0"
+  }
+}
