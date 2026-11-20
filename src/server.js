@@ -10,4 +10,16 @@ const app = createApp({
   usersRepository: createUsersRepository(db)
 });
 
-app.listen(config.PORT, () => console.log(`Server running on http://localhost:${config.PORT}`));
+const server = app.listen(config.PORT, () => console.log(`Server running on http://localhost:${config.PORT}`));
+
+async function shutdown(signal) {
+  console.log(`${signal} received, shutting down`);
+  server.close(async () => {
+    await db.destroy();
+    console.log("Server closed, database pool destroyed");
+    process.exit(0);
+  });
+}
+
+process.on("SIGTERM", () => shutdown("SIGTERM"));
+process.on("SIGINT", () => shutdown("SIGINT"));
