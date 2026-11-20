@@ -1,4 +1,5 @@
 const { NotFoundError, ConflictError, ValidationError, ForbiddenError } = require("../../errors/AppError");
+const { noopEventBus } = require("../../events/eventBus");
 
 const MIN_DURATION_MS = 15 * 60 * 1000;
 const MAX_DURATION_MS = 8 * 60 * 60 * 1000;
@@ -11,7 +12,7 @@ const ALLOWED_TRANSITIONS = {
 const canAccess = (reservation, currentUser) =>
   currentUser.role === "ADMIN" || reservation.userId === currentUser.id;
 
-function createReservationsService({ runInTransaction, now = () => new Date() }) {
+function createReservationsService({ runInTransaction, eventBus = noopEventBus, now = () => new Date() }) {
   async function listReservations(query, currentUser) {
     if (currentUser.role !== "ADMIN") {
       if (query.userId !== undefined) throw new ForbiddenError("Only ADMIN can filter by userId");
@@ -49,7 +50,7 @@ function createReservationsService({ runInTransaction, now = () => new Date() })
       throw new ValidationError([{ location: "body", field: "startTime", message: "startTime cannot be in the past" }]);
     }
 
-    return runInTransaction(async ({ roomsRepository, reservationsRepository }) => {
+    const reservation = await runInTransaction(async ({ roomsRepository, reservationsRepository }) => {
       const room = await roomsRepository.findById(input.roomId);
       if (!room) throw new NotFoundError("Room");
 
@@ -73,10 +74,21 @@ function createReservationsService({ runInTransaction, now = () => new Date() })
         internalNote: "created via API v2"
       });
     });
+
+    eventBus.publish("reservation.created", {
+      reservationId: reservation.id,
+      roomId: reservation.roomId,
+      userId: reservation.userId,
+      startTime: new Date(reservation.startTime).toISOString(),
+      endTime: new Date(reservation.endTime).toISOString()
+    });
+    return reservation;
   }
 
   async function cancelReservation(id, currentUser) {
-    return runInTransaction(async ({ reservationsRepository }) => {
+    let cancelled = false;
+
+    const reservation = await runInTransaction(async ({ reservationsRepository }) => {
       const reservation = await reservationsRepository.findById(id);
       if (!reservation || !canAccess(reservation, currentUser)) throw new NotFoundError("Reservation");
 
@@ -89,8 +101,19 @@ function createReservationsService({ runInTransaction, now = () => new Date() })
         throw new ConflictError("Reservation has already started", "RESERVATION_ALREADY_STARTED");
       }
 
+      cancelled = true;
       return reservationsRepository.update(id, { status: "CANCELLED", cancelledAt: now() });
     });
+
+    if (cancelled) {
+      eventBus.publish("reservation.cancelled", {
+        reservationId: reservation.id,
+        roomId: reservation.roomId,
+        userId: reservation.userId,
+        cancelledBy: currentUser.id
+      });
+    }
+    return reservation;
   }
 
   return { listReservations, getReservation, createReservation, cancelReservation };

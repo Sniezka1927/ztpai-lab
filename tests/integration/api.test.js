@@ -37,7 +37,7 @@ beforeAll(async () => {
 });
 
 beforeEach(async () => {
-  await db.raw("TRUNCATE reservations, rooms, buildings, users RESTART IDENTITY CASCADE");
+  await db.raw("TRUNCATE audit_log, reservations, rooms, buildings, users RESTART IDENTITY CASCADE");
   await db("buildings").insert({ name: "Budynek A", address: "ul. Warszawska 24, Kraków" });
   await db("rooms").insert([
     { building_id: 1, name: "101", capacity: 30 },

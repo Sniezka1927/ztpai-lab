@@ -145,3 +145,43 @@ describe("reservationsService.cancelReservation", () => {
       .resolves.toMatchObject({ status: "CANCELLED" });
   });
 });
+
+describe("reservationsService events", () => {
+  test("publishes reservation.created after success", async () => {
+    const { service, eventBus } = setup();
+
+    const created = await service.createReservation(input("10:00", "12:00"), owner);
+
+    expect(eventBus.publish).toHaveBeenCalledTimes(1);
+    expect(eventBus.publish).toHaveBeenCalledWith("reservation.created", {
+      reservationId: created.id,
+      roomId: 1,
+      userId: owner.id,
+      startTime: at("10:00"),
+      endTime: at("12:00")
+    });
+  });
+
+  test("does not publish when creation fails", async () => {
+    const { service, eventBus } = setup({ reservations: [reservation(1)] });
+
+    await expect(service.createReservation(input("11:00", "13:00"), owner)).rejects.toMatchObject({ code: "ROOM_ALREADY_BOOKED" });
+
+    expect(eventBus.publish).not.toHaveBeenCalled();
+  });
+
+  test("publishes reservation.cancelled once, not on repeated cancel", async () => {
+    const { service, eventBus } = setup({ reservations: [reservation(1)] });
+
+    await service.cancelReservation(1, admin);
+    await service.cancelReservation(1, admin);
+
+    expect(eventBus.publish).toHaveBeenCalledTimes(1);
+    expect(eventBus.publish).toHaveBeenCalledWith("reservation.cancelled", {
+      reservationId: 1,
+      roomId: 1,
+      userId: owner.id,
+      cancelledBy: admin.id
+    });
+  });
+});
