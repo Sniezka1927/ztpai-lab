@@ -60,7 +60,7 @@ function createReservationsService({ runInTransaction, eventBus = noopEventBus, 
 
       await roomsRepository.lockById(input.roomId);
       const active = await reservationsRepository.list({ roomId: input.roomId, status: "CONFIRMED" });
-      const overlaps = active.some((r) => start <= r.endTime.getTime() && r.startTime.getTime() <= end);
+      const overlaps = active.some((r) => start < r.endTime.getTime() && r.startTime.getTime() < end);
       if (overlaps) {
         throw new ConflictError("Room is already booked in this time range", "ROOM_ALREADY_BOOKED");
       }
