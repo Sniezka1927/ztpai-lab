@@ -1,5 +1,7 @@
 # Room Booking API
 
+![CI](https://github.com/Sniezka1927/ztpai-lab/actions/workflows/ci.yml/badge.svg)
+
 API do rezerwacji sal (Express, PostgreSQL, Knex).
 
 ## Uruchomienie
